@@ -35,7 +35,8 @@ def next_full_number(chars):
 
 def next_symbol(chars):
     symbol = chars.pop(0)
-    while chars and chars[0] not in SINGLE_TOKENS + list(string.whitespace):
+    nonsymbol_chars = SINGLE_TOKENS + list(string.whitespace) + ['"']
+    while chars and chars[0] not in nonsymbol_chars:
         symbol += chars.pop(0)
     return symbol
 
