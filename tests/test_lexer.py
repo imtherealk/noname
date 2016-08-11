@@ -5,9 +5,9 @@ from noname import tokenize
 
 class TestLexer(unittest.TestCase):
     def test_easy(self):
-        source = '(+ 1 2)'
+        source = '(+ 1 2'
         result = tokenize(source)
-        tokens = ['(', '+', '1', '2', ')']
+        tokens = ['(', '+', '1', '2']
         self.assertEqual(tokens, result)
 
     def test_simple(self):

@@ -1,6 +1,9 @@
 import string
 
 
+SINGLE_TOKENS = ['(', ')', "'"]
+
+
 def skip_whitespaces(chars):
     while chars and chars[0] in string.whitespace:
         chars.pop(0)
@@ -8,14 +11,31 @@ def skip_whitespaces(chars):
 
 def next_number(chars):
     number = chars.pop(0)
-    while chars[0].isdigit():
+    while chars and chars[0].isdigit():
         number += chars.pop(0)
+    return number
+
+
+def next_string(chars):
+    token = chars.pop(0)
+    while chars[0] != '"':
+        token += chars.pop(0)
+    token += chars.pop(0)
+    return token
+
+
+def next_full_number(chars):
+    left = next_number(chars)
+    if chars and chars[0] == '.':
+        number = left + chars.pop(0) + next_number(chars)
+    else:
+        number = left
     return number
 
 
 def next_symbol(chars):
     symbol = chars.pop(0)
-    while chars[0] not in ['(', ')'] + list(string.whitespace):
+    while chars and chars[0] not in SINGLE_TOKENS + list(string.whitespace):
         symbol += chars.pop(0)
     return symbol
 
@@ -26,10 +46,12 @@ def next_token(chars):
         return
 
     ch = chars[0]
-    if ch in ['(', ')']:
+    if ch in SINGLE_TOKENS:
         return chars.pop(0)
     elif ch.isdigit():
-        return next_number(chars)
+        return next_full_number(chars)
+    elif ch == '"':
+        return next_string(chars)
     else:
         return next_symbol(chars)
 
@@ -43,23 +65,4 @@ def tokenize(source):
         if token is None:
             break
         tokens.append(token)
-
-    while chars:
-        ch = chars[0]
-        if ch == '(' or ch == ')':
-            tokens.append(chars.pop(0))
-        elif ch.isdigit():
-            number = chars.pop(0)
-            while chars[0].isdigit():
-                number += chars.pop(0)
-            tokens.append(number)
-        elif ch in string.whitespace:
-            chars.pop(0)
-            while chars[0] in string.whitespace:
-                chars.pop(0)
-        else:
-            symbol = chars.pop(0)
-            while not (chars[0] == '(' or chars[0] == ')' or chars[0] in string.whitespace):
-                symbol += chars.pop(0)
-            tokens.append(symbol)
     return tokens
