@@ -37,6 +37,11 @@ class TestLexer(unittest.TestCase):
         result = tokenize(source)
         self.assertEqual([source], result)
 
+    def test_escape_string(self):
+        source = r'"escape\\"'
+        result = tokenize(source)
+        self.assertEqual([source], result)
+
 
 if __name__ == '__main__':
     unittest.main()

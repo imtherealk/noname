@@ -19,6 +19,8 @@ def next_number(chars):
 def next_string(chars):
     token = chars.pop(0)
     while chars[0] != '"':
+        if chars[0] == '\\':
+            token += chars.pop(0)
         token += chars.pop(0)
     token += chars.pop(0)
     return token
