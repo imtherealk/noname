@@ -3,7 +3,7 @@ import unittest
 from noname import tokenize, parse, Symbol
 
 
-class TestLexer(unittest.TestCase):
+class TestParser(unittest.TestCase):
     def test_simple(self):
         # (+ 1 2)
         tokens = ['(', '+', '1', '2', ')']
