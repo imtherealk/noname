@@ -6,31 +6,46 @@ PARENTHESES = ['(', ')']
 def parse(tokens):
     result = []
     while tokens:
-        result.append(read_single_set(tokens))
+        result.append(next_item(tokens))
     return result
 
 
-def read_single_set(tokens):
-    token = tokens.pop(0)
+def next_item(tokens):
+    token = tokens[0]
     if token == '(':
-        result = []
-        while tokens[0] != ')':
-            result.append(read_single_set(tokens))
-        tokens.pop(0)
-        return result
+        return next_list(tokens)
     # elif token == "'":
     #     pass
     elif token[0] == '"':
-        chars = list(token)
-        chars.pop(0)
-        chars.pop(len(chars) - 1)
-        return ''.join(chars)
+        return next_string(tokens)
+    elif token[0].isdigit():
+        return next_number(tokens)
     else:
-        try:
-            return int(token)
-        except ValueError:
-            try:
-                return float(token)
-            except ValueError:
-                return Symbol(token)
+        return next_symbol(tokens)
 
+
+def next_list(tokens):
+    result = []
+    tokens.pop(0)
+    while tokens[0] != ')':
+        result.append(next_item(tokens))
+    tokens.pop(0)
+    return result
+
+
+def next_string(tokens):
+    token = tokens.pop(0)
+    return token[1:-1]
+
+
+def next_number(tokens):
+    token = tokens.pop(0)
+    try:
+        return int(token)
+    except ValueError:
+        return float(token)
+
+
+def next_symbol(tokens):
+    token = tokens.pop(0)
+    return Symbol(token)

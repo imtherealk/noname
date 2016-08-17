@@ -14,6 +14,16 @@ class TestParser(unittest.TestCase):
         ]
         self.assertEqual(expected, ast)
 
+    def test_nil(self):
+        # ()
+        tokens = ['(', ')']
+
+        ast = parse(tokens)
+        expected = [
+            []
+        ]
+        self.assertEqual(expected, ast)
+
     def test_nested(self):
         # (* 2 (+ 1 2))
         tokens = tokenize('(* 2 (+ 1 2))')
