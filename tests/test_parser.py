@@ -66,6 +66,16 @@ class TestParser(unittest.TestCase):
         self.assertEqual(expected, ast)
 
     def test_quote(self):
+        # 'foo == (quote foo)
+        tokens = ["'", 'foo']
+
+        ast = parse(tokens)
+        expected = [
+            [Symbol('quote'), Symbol('foo')]
+        ]
+        self.assertEqual(expected, ast)
+
+    def test_list_quote(self):
         # '(+ 1 2) == (quote (+ 1 2))
         tokens = ["'", '(', '+', '1', '2', ')']
 

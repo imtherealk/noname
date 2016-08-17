@@ -15,8 +15,8 @@ def next_item(tokens):
     token = tokens[0]
     if token == '(':
         return next_list(tokens)
-    # elif token == "'":
-    #     pass
+    elif token == "'":
+        return next_quote(tokens)
     elif token[0] == '"':
         return next_string(tokens)
     elif token[0].isdigit():
@@ -50,3 +50,9 @@ def next_number(tokens):
 def next_symbol(tokens):
     token = tokens.pop(0)
     return Symbol(token)
+
+
+def next_quote(tokens):
+    tokens.pop(0)
+    item = next_item(tokens)
+    return [Symbol('quote'), item]
