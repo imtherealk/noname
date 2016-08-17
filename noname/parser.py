@@ -1,4 +1,5 @@
 from .types import Symbol
+from .helpers import unescape_string
 
 PARENTHESES = ['(', ')']
 
@@ -35,7 +36,7 @@ def next_list(tokens):
 
 def next_string(tokens):
     token = tokens.pop(0)
-    return token[1:-1]
+    return unescape_string(token[1:-1])
 
 
 def next_number(tokens):
