@@ -7,6 +7,12 @@ class Environment(object):
         self.parent = parent
         self.variables = {}
 
+    def find_by_name(self, name):
+        return self.find(Symbol(name))
+
+    def set_with_name(self, name, value):
+        return self.set(Symbol(name), value)
+
     def find(self, name):
         if name.name in self.variables:
             return self.variables[name.name]

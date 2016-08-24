@@ -1,6 +1,6 @@
 from ..evaluator import evaluate
+from ..native_code import native_code
 from ..types import Symbol
-from ..native_code import NativeCode, native_code
 
 
 @native_code
