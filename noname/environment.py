@@ -1,3 +1,6 @@
+from noname.types import Symbol
+
+
 class Environment(object):
     def __init__(self, parent):
         super().__init__()
@@ -14,3 +17,10 @@ class Environment(object):
 
     def set(self, name, value):
         self.variables[name.name] = value
+
+    @classmethod
+    def from_dict(cls, d, parent=None):
+        env = cls(parent)
+        for key, value in d.items():
+            env.set(Symbol(key), value)
+        return env

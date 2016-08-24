@@ -1,5 +1,5 @@
 from .native_code import NativeCode
-from .macro import Macro, bind
+from .macro import Macro
 from .environment import Environment
 from .function import Function
 from .types import Symbol
