@@ -3,3 +3,12 @@ class Macro(object):
         self.param_names = param_names
         self.body = body
         self.env = env
+
+# true, false (Boolean)
+# nil Type
+# def
+# defmacro
+# if
+# fn
+# defn
+
