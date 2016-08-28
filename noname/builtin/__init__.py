@@ -10,4 +10,6 @@ root_env.set(Symbol('nil'), None)
 root_env.set(Symbol('def'), Macro([Symbol('name'), Symbol('value')],
                                   macros.def_body,
                                   root_env))
-
+root_env.set(Symbol('fn'), Macro([Symbol('name'), Symbol('body')],
+                                 macros.fn_body,
+                                 root_env))
