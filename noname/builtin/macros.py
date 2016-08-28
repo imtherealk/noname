@@ -19,6 +19,10 @@ def def_body(env):
     return inner
 
 
+def as_param_spec(param_spec):
+    pass
+
+
 @native_code
 def fn_body(env):
     names = env.find(Symbol('names'))

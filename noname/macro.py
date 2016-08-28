@@ -6,9 +6,9 @@ class Macro(object):
 
 # true, false (Boolean)
 # nil Type
-# def <
+# def
 # fn
-# macro
+# macro <
 # defn
 # defmacro
 # if

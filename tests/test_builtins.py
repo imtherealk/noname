@@ -38,6 +38,35 @@ class TestBuiltins(unittest.TestCase):
         self.assertEqual(parse(tokenize('(+ 1 (+ x y)))'))[0], result.body)
         self.assertEqual(root_env, result.env)
 
+    def test_defn(self):
+        env = Environment(root_env)
+        result = execute('''
+            (defn inc (x) (+ 1 x))
+        ''', env)
+        self.assertIsNone(result)
+        inc = root_env.find_by_name('inc')
+        self.assertIsInstance(inc, Function)
+        self.assertEqual([Symbol('x')], inc.param_names)
+        self.assertEqual(parse(tokenize('(+ 1 x)'))[0], inc.body)
+        self.assertEqual(env, inc.env)
+
+    def test_defmacro(self):
+        env = Environment(root_env)
+        result = execute('''
+            (defmacro defadded
+              (name first second)
+              (list 'def name (list + first second)))
+        ''', env)
+        self.assertIsNone(result)
+        defmacro = root_env.find_by_name('defmacro')
+        self.assertIsInstance(defmacro, Macro)
+        self.assertEqual([Symbol('name'), Symbol('first'), Symbol('second')],
+                         defmacro.param_names)
+        self.assertEqual(
+            parse(tokenize("(list 'def name (list + first second))"))[0],
+            defmacro.body)
+        self.assertEqual(env, defmacro.env)
+
 
 if __name__ == '__main__':
     unittest.main()
