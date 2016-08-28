@@ -1,3 +1,4 @@
+from ..macro import Macro
 from ..function import Function
 from ..evaluator import evaluate
 from ..native_code import native_code
@@ -20,11 +21,23 @@ def def_body(env):
 
 @native_code
 def fn_body(env):
-    name = env.find(Symbol('name'))
+    names = env.find(Symbol('names'))
     body = env.find(Symbol('body'))
 
     @native_code
     def inner(env):
-        return Function(name, body, env)
+        return Function(names, body, env)
+
+    return inner
+
+
+@native_code
+def macro_body(env):
+    names = env.find(Symbol('names'))
+    body = env.find(Symbol('body'))
+
+    @native_code
+    def inner(env):
+        return Macro(names, body, env)
 
     return inner
