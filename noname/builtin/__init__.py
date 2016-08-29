@@ -1,4 +1,5 @@
-from noname.builtin import macros
+from noname.builtin import macros, functions
+from noname.function import Function
 from noname.macro import Macro
 from noname.parameter_spec import ParameterSpec
 from noname.types import Symbol
@@ -20,3 +21,8 @@ root_env.set(Symbol('macro'),
              Macro(ParameterSpec([Symbol('param_spec'), Symbol('body')]),
                    macros.macro_body,
                    root_env))
+
+root_env.set(Symbol('list'),
+             Function(ParameterSpec([], Symbol('items')),
+                      functions.list_body,
+                      root_env))
