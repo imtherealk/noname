@@ -1,3 +1,4 @@
+from . import parameter_spec
 from .native_code import NativeCode
 from .macro import Macro
 from .environment import Environment
@@ -6,7 +7,7 @@ from .types import Symbol
 
 
 def evaluate(item, env):
-    """Evalute"""
+    """Evaluate"""
     if isinstance(item, list):
         first = evaluate(item[0], env)
         if isinstance(first, Function):
@@ -23,25 +24,16 @@ def evaluate(item, env):
         return item
 
 
-def call_function(function, args, env):
-    evaluated_args = []
-
-    for arg in args:
-        evaluated_args.append(evaluate(arg, env))
+def call_function(function: Function, args, env):
+    args = [evaluate(x, env) for x in args]
     new_env = Environment(function.env)
 
-    for i, name in enumerate(function.param_names):
-        new_env.set(name, evaluated_args[i])
-
+    parameter_spec.bind(new_env, function.param_spec, args)
     return evaluate(function.body, new_env)
 
 
-def call_macro(macro, args, env):
+def call_macro(macro: Macro, args, env):
     new_env = Environment(macro.env)
-
-    for i, name in enumerate(macro.param_names):
-        new_env.set(name, args[i])
-
+    parameter_spec.bind(new_env, macro.param_spec, args)
     generated_code = evaluate(macro.body, new_env)
     return evaluate(generated_code, env)
-

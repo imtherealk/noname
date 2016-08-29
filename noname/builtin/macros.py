@@ -1,3 +1,4 @@
+from .. import parameter_spec
 from ..macro import Macro
 from ..function import Function
 from ..evaluator import evaluate
@@ -19,29 +20,29 @@ def def_body(env):
     return inner
 
 
-def as_param_spec(param_spec):
-    pass
-
-
 @native_code
 def fn_body(env):
-    names = env.find(Symbol('names'))
+    param_spec = env.find(Symbol('param_spec'))
     body = env.find(Symbol('body'))
+
+    param_spec = parameter_spec.parse(param_spec)
 
     @native_code
     def inner(env):
-        return Function(names, body, env)
+        return Function(param_spec, body, env)
 
     return inner
 
 
 @native_code
 def macro_body(env):
-    names = env.find(Symbol('names'))
+    param_spec = env.find(Symbol('param_spec'))
     body = env.find(Symbol('body'))
+
+    param_spec = parameter_spec.parse(param_spec)
 
     @native_code
     def inner(env):
-        return Macro(names, body, env)
+        return Macro(param_spec, body, env)
 
     return inner

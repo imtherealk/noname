@@ -1,6 +1,7 @@
 import unittest
 
 from noname import execute, parse, tokenize
+from noname.parameter_spec import ParameterSpec
 from noname.types import Symbol
 from noname.builtin import root_env
 from noname.environment import Environment
@@ -25,7 +26,8 @@ class TestBuiltins(unittest.TestCase):
             (fn (x y) (+ 1 (+ x y)))
         ''', root_env)
         self.assertIsInstance(result, Function)
-        self.assertEqual([Symbol('x'), Symbol('y')], result.param_names)
+        self.assertEqual(ParameterSpec([Symbol('x'), Symbol('y')]),
+                         result.param_spec)
         self.assertEqual(parse(tokenize('(+ 1 (+ x y)))'))[0], result.body)
         self.assertEqual(root_env, result.env)
 
@@ -34,7 +36,8 @@ class TestBuiltins(unittest.TestCase):
             (macro (x y) (+ 1 (+ x y)))
         ''', root_env)
         self.assertIsInstance(result, Macro)
-        self.assertEqual([Symbol('x'), Symbol('y')], result.param_names)
+        self.assertEqual(ParameterSpec([Symbol('x'), Symbol('y')]),
+                         result.param_spec)
         self.assertEqual(parse(tokenize('(+ 1 (+ x y)))'))[0], result.body)
         self.assertEqual(root_env, result.env)
 
