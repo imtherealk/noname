@@ -1,4 +1,9 @@
+import math
+import functools
+import operator
+
 from noname.builtin import macros, functions
+from noname.builtin.functions import from_native_function
 from noname.function import Function
 from noname.macro import Macro
 from noname.parameter_spec import ParameterSpec
@@ -37,3 +42,41 @@ root_env.set(Symbol('defmacro'),
                  Symbol('param_spec'),
                  Symbol('body')
              ]), macros.defmacro_body, root_env))
+# Simple builtin functions
+root_env.set(Symbol('+'),
+             from_native_function(
+                 lambda *args: functools.reduce(operator.add, args),
+                 root_env))
+root_env.set(Symbol('-'),
+             from_native_function(
+                 lambda *args: functools.reduce(operator.sub, args),
+                 root_env))
+root_env.set(Symbol('*'),
+             from_native_function(
+                 lambda *args: functools.reduce(operator.mul, args),
+                 root_env))
+root_env.set(Symbol('/'),
+             from_native_function(
+                 lambda *args: functools.reduce(lambda x, y: x / y, args),
+                 root_env))
+root_env.set(Symbol('mod'), from_native_function(operator.mod, root_env))
+root_env.set(Symbol('power'), from_native_function(math.pow, root_env))
+root_env.set(Symbol('sqrt'), from_native_function(math.sqrt, root_env))
+root_env.set(Symbol('first'),
+             from_native_function(lambda x: x[0], root_env))
+root_env.set(Symbol('rest'),
+             from_native_function(lambda x: x[1:], root_env))
+root_env.set(Symbol('take'),
+             from_native_function(lambda n, x: x[:n], root_env))
+root_env.set(Symbol('drop'),
+             from_native_function(lambda n, x: x[n:], root_env))
+root_env.set(Symbol('take-last'),
+             from_native_function(lambda n, x: x[-n:], root_env))
+root_env.set(Symbol('drop-last'),
+             from_native_function(lambda n, x: x[:-n], root_env))
+root_env.set(Symbol('concat'),
+             from_native_function(lambda x, y: list(x) + list(y), root_env))
+root_env.set(Symbol('append'),
+             from_native_function(lambda x, y: list(x) + [y], root_env))
+root_env.set(Symbol('println'),
+             from_native_function(print, root_env))

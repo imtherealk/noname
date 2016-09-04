@@ -86,8 +86,8 @@ class TestBuiltins(unittest.TestCase):
         execute('''
             (do
               (def a 1)
-              (def b (+ a 1)
-              (def c (+ b 1))
+              (def b (+ a 1))
+              (def c (+ b 1)))
         ''')
         self.assertEqual(1, root_env.find_by_name('a'))
         self.assertEqual(2, root_env.find_by_name('b'))
