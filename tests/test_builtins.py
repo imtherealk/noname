@@ -71,6 +71,35 @@ class TestBuiltins(unittest.TestCase):
             defadded.body)
         self.assertEqual(env, defadded.env)
 
+    def test_do(self):
+        # body가 비어있을 때
+        result = execute('''
+            (do)
+        ''')
+        self.assertIsNone(result)
+        # 마지막 expression을 return한다
+        result = execute('''
+            (do (+ 1 2) (+ 3 4))
+        ''')
+        self.assertEqual(7, result)
+        # 순서대로 모든 expression을 evaluate한다
+        execute('''
+            (do
+              (def a 1)
+              (def b (+ a 1)
+              (def c (+ b 1))
+        ''')
+        self.assertEqual(1, root_env.find_by_name('a'))
+        self.assertEqual(2, root_env.find_by_name('b'))
+        self.assertEqual(3, root_env.find_by_name('c'))
+        # 스코프 체크
+        env = Environment(root_env)
+        env.set_with_name('a', 5)
+        result = execute('''
+            (do (+ a 2))
+        ''', env)
+        self.assertEqual(7, result)
+
 
 if __name__ == '__main__':
     unittest.main()
