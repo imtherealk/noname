@@ -21,8 +21,19 @@ root_env.set(Symbol('macro'),
              Macro(ParameterSpec([Symbol('param_spec'), Symbol('body')]),
                    macros.macro_body,
                    root_env))
-
 root_env.set(Symbol('list'),
              Function(ParameterSpec([], Symbol('items')),
                       functions.list_body,
                       root_env))
+root_env.set(Symbol('defn'),
+             Macro(ParameterSpec([
+                 Symbol('name'),
+                 Symbol('param_spec'),
+                 Symbol('body')
+             ]), macros.defn_body, root_env))
+root_env.set(Symbol('defmacro'),
+             Macro(ParameterSpec([
+                 Symbol('name'),
+                 Symbol('param_spec'),
+                 Symbol('body')
+             ]), macros.defmacro_body, root_env))

@@ -13,6 +13,15 @@ class ParameterSpec(object):
         return (self.positionals == other.positionals and
                 self.extra == other.extra)
 
+    def __repr__(self):
+        positionals = ', '.join(x.name for x in self.positionals)
+        extra = None
+        if self.extra:
+            extra = self.extra.name
+
+        return 'ParameterSpec(positionals=[{0}], extra={1}'.format(
+            positionals, extra)
+
 
 def _assert_type(expected, actual):
     if not isinstance(actual, expected):

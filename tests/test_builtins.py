@@ -49,7 +49,7 @@ class TestBuiltins(unittest.TestCase):
         self.assertIsNone(result)
         inc = root_env.find_by_name('inc')
         self.assertIsInstance(inc, Function)
-        self.assertEqual([Symbol('x')], inc.param_names)
+        self.assertEqual(ParameterSpec([Symbol('x')]), inc.param_spec)
         self.assertEqual(parse(tokenize('(+ 1 x)'))[0], inc.body)
         self.assertEqual(env, inc.env)
 
@@ -61,14 +61,15 @@ class TestBuiltins(unittest.TestCase):
               (list 'def name (list + first second)))
         ''', env)
         self.assertIsNone(result)
-        defmacro = root_env.find_by_name('defmacro')
-        self.assertIsInstance(defmacro, Macro)
-        self.assertEqual([Symbol('name'), Symbol('first'), Symbol('second')],
-                         defmacro.param_names)
+        defadded = root_env.find_by_name('defadded')
+        self.assertIsInstance(defadded, Macro)
+        self.assertEqual(
+            ParameterSpec([Symbol('name'), Symbol('first'), Symbol('second')]),
+            defadded.param_spec)
         self.assertEqual(
             parse(tokenize("(list 'def name (list + first second))"))[0],
-            defmacro.body)
-        self.assertEqual(env, defmacro.env)
+            defadded.body)
+        self.assertEqual(env, defadded.env)
 
 
 if __name__ == '__main__':

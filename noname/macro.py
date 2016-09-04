@@ -11,6 +11,7 @@ class Macro(object):
 # nil Type
 # def
 # fn
+# do
 # macro <
 # defn
 # defmacro
