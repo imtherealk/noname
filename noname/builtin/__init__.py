@@ -19,11 +19,11 @@ root_env.set(Symbol('def'),
                    macros.def_body,
                    root_env))
 root_env.set(Symbol('fn'),
-             Macro(ParameterSpec([Symbol('param_spec'), Symbol('body')]),
+             Macro(ParameterSpec([Symbol('param_spec')], Symbol('bodies')),
                    macros.fn_body,
                    root_env))
 root_env.set(Symbol('macro'),
-             Macro(ParameterSpec([Symbol('param_spec'), Symbol('body')]),
+             Macro(ParameterSpec([Symbol('param_spec')], Symbol('bodies')),
                    macros.macro_body,
                    root_env))
 root_env.set(Symbol('list'),
@@ -33,15 +33,19 @@ root_env.set(Symbol('list'),
 root_env.set(Symbol('defn'),
              Macro(ParameterSpec([
                  Symbol('name'),
-                 Symbol('param_spec'),
-                 Symbol('body')
-             ]), macros.defn_body, root_env))
+                 Symbol('param_spec')],
+                 Symbol('bodies')),
+                 macros.defn_body, root_env))
 root_env.set(Symbol('defmacro'),
              Macro(ParameterSpec([
                  Symbol('name'),
-                 Symbol('param_spec'),
-                 Symbol('body')
-             ]), macros.defmacro_body, root_env))
+                 Symbol('param_spec')],
+                 Symbol('bodies')),
+                 macros.defmacro_body, root_env))
+root_env.set(Symbol('do'),
+             Macro(ParameterSpec([], Symbol('bodies')),
+                   macros.do_body,
+                   root_env))
 # Simple builtin functions
 root_env.set(Symbol('+'),
              from_native_function(

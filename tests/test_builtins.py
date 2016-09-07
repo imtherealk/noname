@@ -31,6 +31,20 @@ class TestBuiltins(unittest.TestCase):
         self.assertEqual(parse(tokenize('(+ 1 (+ x y)))'))[0], result.body)
         self.assertEqual(root_env, result.env)
 
+        result = execute('''
+            (fn (x y)
+              (println x)
+              (println y)
+              (+ x y))
+        ''', root_env)
+        self.assertIsInstance(result, Function)
+        self.assertEqual(ParameterSpec([Symbol('x'), Symbol('y')]),
+                         result.param_spec)
+        self.assertEqual(
+            parse(tokenize('(do (println x) (println y) (+ x y))'))[0],
+            result.body)
+        self.assertEqual(root_env, result.env)
+
     def test_macro(self):
         result = execute('''
             (macro (x y) (+ 1 (+ x y)))

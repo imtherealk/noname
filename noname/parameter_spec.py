@@ -19,7 +19,7 @@ class ParameterSpec(object):
         if self.extra:
             extra = self.extra.name
 
-        return 'ParameterSpec(positionals=[{0}], extra={1}'.format(
+        return 'ParameterSpec(positionals=[{0}], extra={1})'.format(
             positionals, extra)
 
 
