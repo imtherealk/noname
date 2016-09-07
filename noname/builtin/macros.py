@@ -11,12 +11,25 @@ from ..types import Symbol
 def def_body(env):
     name = env.find(Symbol('name'))
     value = env.find(Symbol('value'))
-    root_env = env.parent
+
+    @native_code
+    def inner(env: Environment):
+        root_env = env
+        while root_env.parent.parent is not None:
+            root_env = root_env.parent
+        root_env.set(name, evaluate(value, env))
+        return None
+
+    return inner
+
+
+@native_code
+def quote_body(env):
+    value = env.find(Symbol('value'))
 
     @native_code
     def inner(env):
-        root_env.set(name, evaluate(value, env))
-        return None
+        return value
 
     return inner
 

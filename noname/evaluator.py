@@ -9,6 +9,8 @@ from .types import Symbol
 def evaluate(item, env):
     """Evaluate"""
     if isinstance(item, list):
+        if not item:
+            raise SyntaxError("First item of list should be macro or function")
         first = evaluate(item[0], env)
         if isinstance(first, Function):
             return call_function(first, item[1:], env)

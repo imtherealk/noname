@@ -1,4 +1,3 @@
-from noname.builtin import root_env
 from .tokenizer import tokenize
 from .parser import parse
 from .evaluator import evaluate
@@ -6,7 +5,7 @@ from .types import Symbol
 from .environment import Environment
 
 
-def execute(code, env=root_env):
+def execute(code, env: Environment):
     expressions = parse(tokenize(code))
     result = None
     for expression in expressions:
