@@ -44,7 +44,9 @@ class TestBuiltins(unittest.TestCase):
         self.assertEqual(ParameterSpec([Symbol('x'), Symbol('y')]),
                          result.param_spec)
         self.assertEqual(
-            parse(tokenize('(do (println x) (println y) (+ x y))'))[0],
+            execute('''
+            (list do '(println x) '(println y) '(+ x y))
+            ''', self.root_env),
             result.body)
         self.assertEqual(self.root_env, result.env)
 
