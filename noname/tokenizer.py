@@ -4,68 +4,89 @@ import string
 SINGLE_TOKENS = ['(', ')', "'"]
 
 
-def skip_whitespaces(chars):
-    while chars and chars[0] in string.whitespace:
-        chars.pop(0)
+def next_char(chars):
+    try:
+        return next(chars)
+    except StopIteration:
+        return None
 
 
-def next_number(chars):
-    number = chars.pop(0)
-    while chars and chars[0].isdigit():
-        number += chars.pop(0)
-    return number
+def skip_whitespaces(first, chars):
+    while first is not None and first in string.whitespace:
+        first = next_char(chars)
+    return first
 
 
-def next_string(chars):
-    token = chars.pop(0)
-    while chars[0] != '"':
-        if chars[0] == '\\':
-            token += chars.pop(0)
-        token += chars.pop(0)
-    token += chars.pop(0)
-    return token
+def next_number(first, chars):
+    number = first
+    first = next_char(chars)
+    while first is not None and first.isdigit():
+        number += first
+        first = next_char(chars)
+    return first, number
 
 
-def next_full_number(chars):
-    left = next_number(chars)
-    if chars and chars[0] == '.':
-        number = left + chars.pop(0) + next_number(chars)
+def next_string(first, chars):
+    token = first
+    first = next_char(chars)
+    while first != '"':
+        if first == '\\':
+            token += first
+            first = next_char(chars)
+        token += first
+        first = next_char(chars)
+    token += first
+    first = next_char(chars)
+    return first, token
+
+
+def next_full_number(first, chars):
+    first, left = next_number(first, chars)
+    if first is not None and first == '.':
+        first = next_char(chars)
+        if first is None or not first.isdigit():
+            number = left + '.'
+        else:
+            first, right = next_number(first, chars)
+            number = left + '.' + right
     else:
         number = left
-    return number
+    return first, number
 
 
-def next_symbol(chars):
-    symbol = chars.pop(0)
+def next_symbol(first, chars):
+    symbol = first
     nonsymbol_chars = SINGLE_TOKENS + list(string.whitespace) + ['"']
-    while chars and chars[0] not in nonsymbol_chars:
-        symbol += chars.pop(0)
-    return symbol
+    first = next_char(chars)
+    while first is not None and first not in nonsymbol_chars:
+        symbol += first
+        first = next_char(chars)
+    return first, symbol
 
 
-def next_token(chars):
-    skip_whitespaces(chars)
-    if not chars:
-        return
+def next_token(first, chars):
+    first = skip_whitespaces(first, chars)
 
-    ch = chars[0]
-    if ch in SINGLE_TOKENS:
-        return chars.pop(0)
-    elif ch.isdigit():
-        return next_full_number(chars)
-    elif ch == '"':
-        return next_string(chars)
+    if first is None:
+        return None, None
+
+    if first in SINGLE_TOKENS:
+        token = first
+        first = next_char(chars)
+        return first, token
+    elif first.isdigit():
+        return next_full_number(first, chars)
+    elif first == '"':
+        return next_string(first, chars)
     else:
-        return next_symbol(chars)
+        return next_symbol(first, chars)
 
 
 def tokenize(source):
-    tokens = []
-    chars = list(source)
-
-    while True:
-        token = next_token(chars)
+    source = iter(source)
+    first = next(source)
+    while first is not None:
+        first, token = next_token(first, source)
         if token is None:
             break
-        tokens.append(token)
-    return tokens
+        yield token

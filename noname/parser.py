@@ -6,6 +6,7 @@ PARENTHESES = ['(', ')']
 
 def parse(tokens):
     result = []
+    tokens = list(tokens)  # FIXME: 이줄빼고 동작하게 수정
     while tokens:
         result.append(next_item(tokens))
     return result
