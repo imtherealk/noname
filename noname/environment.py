@@ -21,6 +21,13 @@ class Environment(object):
         else:
             return self.parent.find(name)
 
+    def find_name(self, value):
+        for name, _value in self.variables.items():
+            if value == _value:
+                return name
+        if self.parent:
+            return self.parent.find_name(value)
+
     def set(self, name, value):
         self.variables[name.name] = value
 

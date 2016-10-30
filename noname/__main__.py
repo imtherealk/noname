@@ -40,7 +40,7 @@ def main(argv=sys.argv[1:]):
             trees = parse(tokens)
             for tree in trees:
                 try:
-                    print(describe(evaluate(tree, env)))
+                    print(describe(evaluate(tree, env), env))
                 except ExitError:
                     raise
                 except:
