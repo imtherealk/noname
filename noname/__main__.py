@@ -1,4 +1,5 @@
 import sys
+import traceback
 
 from noname import Environment
 from noname import evaluate
@@ -6,11 +7,20 @@ from noname import parse
 from noname import tokenize
 from noname.builtin import builtin_env
 from noname.describer import describe
+from noname.exc import ExitError
 
 
 def reader():
     while True:
-        raw_string = input(">>> ")
+        try:
+            raw_string = input(">>> ")
+        except KeyboardInterrupt:
+            print()
+            print("KeyboardInterrupt")
+            continue
+        except EOFError:
+            print()
+            raise ExitError(1)
         for c in raw_string:
             yield c
         yield '\n'
@@ -18,11 +28,19 @@ def reader():
 
 def main(argv=sys.argv[1:]):
     env = Environment(builtin_env)
-    while True:
-        tokens = tokenize(reader())
-        trees = parse(tokens)
-        for tree in trees:
-            print(describe(evaluate(tree, env)))
+    try:
+        while True:
+            tokens = tokenize(reader())
+            trees = parse(tokens)
+            for tree in trees:
+                try:
+                    print(describe(evaluate(tree, env)))
+                except ExitError:
+                    raise
+                except:
+                    traceback.print_exception(*sys.exc_info())
+    except ExitError as e:
+        sys.exit(e.code)
 
 if __name__ == '__main__':
     main()

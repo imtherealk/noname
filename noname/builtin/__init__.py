@@ -31,3 +31,5 @@ builtin_env.set(Symbol('drop-last'), functions.drop_last_function)
 builtin_env.set(Symbol('concat'), functions.concat_function)
 builtin_env.set(Symbol('append'), functions.append_function)
 builtin_env.set(Symbol('println'), functions.println_function)
+# Exit
+builtin_env.set(Symbol('exit'), functions.exit_function)

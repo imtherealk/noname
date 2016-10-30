@@ -2,6 +2,7 @@ import math
 import functools
 import operator
 
+from noname.exc import ExitError
 from .env import builtin_env
 from ..types import Symbol
 from ..parameter_spec import ParameterSpec
@@ -38,6 +39,15 @@ def function(positional_names, extra_name=None):
 @function([], 'items')
 def list_function(items):
     return items
+
+
+@function([], 'code')
+def exit_function(code):
+    if code:
+        code = code[0]
+    else:
+        code = 0
+    raise ExitError(code)
 
 
 def from_native_function(native_function, env: Environment):
