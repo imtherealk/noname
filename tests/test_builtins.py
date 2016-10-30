@@ -1,12 +1,16 @@
 import unittest
 
-from noname import execute, parse, tokenize
+from noname import execute, parse as _parse, tokenize
 from noname.builtin import builtin_env
 from noname.parameter_spec import ParameterSpec
 from noname.types import Symbol
 from noname.environment import Environment
 from noname.function import Function
 from noname.macro import Macro
+
+
+def parse(tokens):
+    return list(_parse(tokens))
 
 
 class TestBuiltins(unittest.TestCase):

@@ -8,7 +8,7 @@ class TestParser(unittest.TestCase):
         # (+ 1 2)
         tokens = ['(', '+', '1', '2', ')']
 
-        ast = parse(tokens)
+        ast = list(parse(tokens))
         expected = [
             [Symbol('+'), 1, 2]
         ]
@@ -18,7 +18,7 @@ class TestParser(unittest.TestCase):
         # ()
         tokens = ['(', ')']
 
-        ast = parse(tokens)
+        ast = list(parse(tokens))
         expected = [
             []
         ]
@@ -28,7 +28,7 @@ class TestParser(unittest.TestCase):
         # (* 2 (+ 1 2))
         tokens = tokenize('(* 2 (+ 1 2))')
 
-        ast = parse(tokens)
+        ast = list(parse(tokens))
         expected = [
             [Symbol('*'), 2, [Symbol('+'), 1, 2]]
         ]
@@ -38,7 +38,7 @@ class TestParser(unittest.TestCase):
         # "string"
         tokens = ['"string"']
 
-        ast = parse(tokens)
+        ast = list(parse(tokens))
         expected = [
             "string"
         ]
@@ -48,7 +48,7 @@ class TestParser(unittest.TestCase):
         # "string\n\""
         tokens = [r'"string\n\""']
 
-        ast = parse(tokens)
+        ast = list(parse(tokens))
         expected = [
             "string\n\""
         ]
@@ -58,7 +58,7 @@ class TestParser(unittest.TestCase):
         # (+ 1 2)(+ 3 4)
         tokens = tokenize('(+ 1 2)(+ 3 4)')
 
-        ast = parse(tokens)
+        ast = list(parse(tokens))
         expected = [
             [Symbol('+'), 1, 2],
             [Symbol('+'), 3, 4]
@@ -69,7 +69,7 @@ class TestParser(unittest.TestCase):
         # 'foo == (quote foo)
         tokens = ["'", 'foo']
 
-        ast = parse(tokens)
+        ast = list(parse(tokens))
         expected = [
             [Symbol('quote'), Symbol('foo')]
         ]
@@ -79,7 +79,7 @@ class TestParser(unittest.TestCase):
         # '(+ 1 2) == (quote (+ 1 2))
         tokens = ["'", '(', '+', '1', '2', ')']
 
-        ast = parse(tokens)
+        ast = list(parse(tokens))
         expected = [
             [Symbol('quote'), [Symbol('+'), 1, 2]]
         ]
@@ -89,7 +89,7 @@ class TestParser(unittest.TestCase):
         # '(+ 1 '2) == (quote (+ 1 (quote 2)))
         tokens = ["'", '(', '+', '1', "'", '2', ')']
 
-        ast = parse(tokens)
+        ast = list(parse(tokens))
         expected = [
             [Symbol('quote'), [Symbol('+'), 1, [Symbol('quote'), 2]]]
         ]
@@ -99,7 +99,7 @@ class TestParser(unittest.TestCase):
         # 1.1 1 3.14
         tokens = ['1.1', '1', '3.14']
 
-        ast = parse(tokens)
+        ast = list(parse(tokens))
         expected = [
             1.1,
             1,

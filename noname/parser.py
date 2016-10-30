@@ -5,55 +5,67 @@ PARENTHESES = ['(', ')']
 
 
 def parse(tokens):
-    result = []
-    tokens = list(tokens)  # FIXME: 이줄빼고 동작하게 수정
-    while tokens:
-        result.append(next_item(tokens))
-    return result
+    parser = Parser(iter(tokens))
+    return parser.parse()
 
 
-def next_item(tokens):
-    token = tokens[0]
-    if token == '(':
-        return next_list(tokens)
-    elif token == "'":
-        return next_quote(tokens)
-    elif token[0] == '"':
-        return next_string(tokens)
-    elif token[0].isdigit():
-        return next_number(tokens)
-    else:
-        return next_symbol(tokens)
+class Parser(object):
+    def __init__(self, tokens):
+        self.tokens = tokens
+        self.first = None
+        self.finished = False
 
+    def parse(self):
+        self.read_token()
+        while not self.finished:
+            yield self.next_item()
 
-def next_list(tokens):
-    result = []
-    tokens.pop(0)
-    while tokens[0] != ')':
-        result.append(next_item(tokens))
-    tokens.pop(0)
-    return result
+    def next_item(self):
+        if self.first == '(':
+            return self.next_list()
+        elif self.first == "'":
+            return self.next_quote()
+        elif self.first[0] == '"':
+            return self.next_string()
+        elif self.first[0].isdigit():
+            return self.next_number()
+        else:
+            return self.next_symbol()
 
+    def next_list(self):
+        self.read_token()
+        result = []
+        while self.first != ')':
+            result.append(self.next_item())
+        self.read_token()
+        return result
 
-def next_string(tokens):
-    token = tokens.pop(0)
-    return unescape_string(token[1:-1])
+    def next_string(self):
+        token = self.first
+        self.read_token()
+        return unescape_string(token[1:-1])
 
+    def next_number(self):
+        token = self.first
+        self.read_token()
+        try:
+            return int(token)
+        except ValueError:
+            return float(token)
 
-def next_number(tokens):
-    token = tokens.pop(0)
-    try:
-        return int(token)
-    except ValueError:
-        return float(token)
+    def next_symbol(self):
+        symbol = Symbol(self.first)
+        self.read_token()
+        return symbol
 
+    def next_quote(self):
+        self.read_token()
+        item = self.next_item()
+        return [Symbol('quote'), item]
 
-def next_symbol(tokens):
-    token = tokens.pop(0)
-    return Symbol(token)
-
-
-def next_quote(tokens):
-    tokens.pop(0)
-    item = next_item(tokens)
-    return [Symbol('quote'), item]
+    def read_token(self):
+        try:
+            self.first = next(self.tokens)
+        except StopIteration:
+            self.first = None
+            self.finished = True
