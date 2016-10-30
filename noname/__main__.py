@@ -1,5 +1,9 @@
 import sys
 import traceback
+try:
+    import readline
+except ImportError:
+    readline = None
 
 from noname import Environment
 from noname import evaluate
@@ -14,6 +18,8 @@ def reader():
     while True:
         try:
             raw_string = input(">>> ")
+            if readline is not None:
+                readline.add_history(raw_string)
         except KeyboardInterrupt:
             print()
             print("KeyboardInterrupt")
