@@ -18,50 +18,54 @@ class Parser(object):
     def parse(self):
         self.read_token()
         while not self.finished:
-            yield self.next_item()
+            yield from self.next_item()
 
     def next_item(self):
         if self.first == '(':
-            return self.next_list()
+            yield from self.next_list()
         elif self.first == "'":
-            return self.next_quote()
+            yield from self.next_quote()
         elif self.first[0] == '"':
-            return self.next_string()
+            yield from self.next_string()
         elif self.first[0].isdigit():
-            return self.next_number()
+            yield from self.next_number()
         else:
-            return self.next_symbol()
+            yield from self.next_symbol()
+
+    def sync_next_item(self):
+        return list(self.next_item())[0]
 
     def next_list(self):
+        # (+ 1 2)
         self.read_token()
         result = []
         while self.first != ')':
-            result.append(self.next_item())
+            result.append(self.sync_next_item())
+        yield result
         self.read_token()
-        return result
 
     def next_string(self):
         token = self.first
+        yield unescape_string(token[1:-1])
         self.read_token()
-        return unescape_string(token[1:-1])
 
     def next_number(self):
         token = self.first
-        self.read_token()
         try:
-            return int(token)
+            yield int(token)
         except ValueError:
-            return float(token)
+            yield float(token)
+        self.read_token()
 
     def next_symbol(self):
         symbol = Symbol(self.first)
+        yield symbol
         self.read_token()
-        return symbol
 
     def next_quote(self):
         self.read_token()
-        item = self.next_item()
-        return [Symbol('quote'), item]
+        item = self.sync_next_item()
+        yield [Symbol('quote'), item]
 
     def read_token(self):
         try:
